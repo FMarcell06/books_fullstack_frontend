@@ -5,15 +5,20 @@ import "./App.css";
 
 import { Flex, Button, Title, Affix } from "@mantine/core";
 import { Text, Paper } from '@mantine/core';
-import { useViewportSize } from '@mantine/hooks';
+import { useMediaQuery, useViewportSize } from '@mantine/hooks';
 import { Categories } from "./components/Categories";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Books } from "./components/Books";
+import { BooksByCateg } from "./components/BooksByCateg";
+import { SearchResult } from "./components/SearchResult";
+import { MyMenu } from "./components/MyMenu";
 
 function App() {
   const { height, width } = useViewportSize();
-
+  const isMobile=useMediaQuery("(max-width:500px)")
 
   return (
-    <>
+    <BrowserRouter>
       <Flex
         mih={height}
         bg="#ffe066"
@@ -23,13 +28,20 @@ function App() {
         direction="row"
         wrap="wrap"
       >
-        <Affix position={{ top:20 }} style={{width:width}}>
-          <Title order={3} c={"#4dabf7"} style={{textAlign:"center"}}>Válogass a könyvtárban</Title>
+        <Affix position={{ top:0 }} style={{width:width}}>
+          <Title order={3} c={"#4dabf7"} bg={"white"} h={"50px"} p={"5px"} style={{textAlign:"center"}}>Válogass a könyvtárban</Title>
         </Affix>
-
-        <Categories />
+        <Affix position={{top: isMobile? 50: 45,right:10}}>
+          <MyMenu/>
+        </Affix>
+      <Routes>
+        <Route path="/" element={<Categories />}/>
+        <Route path="/books" element={<Books/>}/>
+        <Route path="/books/categ/:categId" element={<BooksByCateg/>}/>
+        <Route path="/books/search/:txt" element={<SearchResult/>}/>
+      </Routes>
       </Flex>
-    </>
+    </BrowserRouter>
   );
 }
 

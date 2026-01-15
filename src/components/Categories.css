@@ -1,0 +1,11 @@
+.category{
+    width: 200px;
+    cursor: pointer;
+    text-align: center;
+    transition: 150ms ease;
+}
+
+.category:hover{
+    background-color: #f1f3f5;
+    scale: 1.05;
+}
