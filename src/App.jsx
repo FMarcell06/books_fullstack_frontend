@@ -12,8 +12,11 @@ import { Books } from "./components/Books";
 import { BooksByCateg } from "./components/BooksByCateg";
 import { SearchResult } from "./components/SearchResult";
 import { MyMenu } from "./components/MyMenu";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { Dashboard } from "./components/Dashboard";
 
 function App() {
+  const [isAdmin, setIsAdmin] = useState(true)
   const { height, width } = useViewportSize();
   const isMobile=useMediaQuery("(max-width:500px)")
 
@@ -32,13 +35,14 @@ function App() {
           <Title order={3} c={"#4dabf7"} bg={"white"} h={"50px"} p={"5px"} style={{textAlign:"center"}}>Válogass a könyvtárban</Title>
         </Affix>
         <Affix position={{top: isMobile? 50: 45,right:10}}>
-          <MyMenu/>
+          <MyMenu setIsAdmin={setIsAdmin}/>
         </Affix>
       <Routes>
         <Route path="/" element={<Categories />}/>
         <Route path="/books" element={<Books/>}/>
         <Route path="/books/categ/:categId" element={<BooksByCateg/>}/>
         <Route path="/books/search/:txt" element={<SearchResult/>}/>
+        <Route path="/dashboard" element={<ProtectedRoute isAdmin={isAdmin}><Dashboard/></ProtectedRoute>}/>
       </Routes>
       </Flex>
     </BrowserRouter>
