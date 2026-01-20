@@ -1,7 +1,7 @@
-import { Flex, Table, ScrollArea, Button, Modal, TextInput } from '@mantine/core';
+import { Flex, Table, ScrollArea, Button, Modal, TextInput, Text } from '@mantine/core';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { createBook, readBooks } from '../../utils';
+import { createBook, deleteBook, readBooks } from '../../utils';
 import { FaTrash } from "react-icons/fa6";
 import { MdModeEditOutline } from "react-icons/md";
 
@@ -17,18 +17,37 @@ export const Dashboard=() => {
     const [books,setBooks] = useState([])
     const [showForm,setShowform] = useState(false)
     const [newBook,setNewBook] = useState({title:"",author:"",description:""})
+    const [editingBook,setEditingBook] = useState(null)
     useEffect(()=>{
         readBooks(setBooks)
     },[])
 console.log(books);
 
+ const handleDelete = async (id) => {
+    console.log(id);
+    try {
+      const resp = await deleteBook(id)
+      alert(resp?.msg)
+      setBooks(prev=>prev.filter(obj=>obj.id!=id))
+    } catch (error) {
+      console.log(error);
+      
+    } 
+  }
+
+  const handleEdit = (book) => {
+    setEditingBook(book)
+    setNewBook({...book})
+    setShowform(true)
+    
+  }
 
   const rows = books.map((obj) => (
     <Table.Tr key={obj.id}>
       <Table.Td>{obj.title}</Table.Td>
       <Table.Td>{obj.author}</Table.Td>
       <Table.Td>{obj.description}</Table.Td>
-        <Table.Td><FaTrash color={"red"} size={35}/><MdModeEditOutline color={"lightblue"} size={35} /></Table.Td>
+        <Table.Td><FaTrash onClick={()=>handleDelete(obj.id)} color={"red"} size={35}/><MdModeEditOutline onClick={()=>handleEdit(obj)} color={"lightblue"} size={35} /></Table.Td>
     </Table.Tr>
   ));
 
@@ -39,11 +58,16 @@ console.log(books);
 
   const handleSave = async () => {
     try {
+      if(editingBook){
+        console.log("modositas");
+        
+      }else{
       const bookToSave = {...newBook,category_id:1,cover:"borito",rating:1}
       const savedBook=await createBook(bookToSave)
       setBooks((prev)=>[...prev,savedBook])
       setShowform(false)
       setNewBook({title:"",author:"",description:""})
+      }
     } catch (error) {
       console.log(error);
       
@@ -64,9 +88,9 @@ console.log(books);
         </Table.Tr>
       </Table.Thead>
       <Table.Tbody>{rows}</Table.Tbody>
-      <Table.Caption>Könyvek száma az adatbázisban : {books.length}</Table.Caption>
     </Table>
             </ScrollArea>
+    <Text>Könyvek száma az adatbázisban : {books.length}</Text>
     <Button onClick={()=>setShowform(true)}>Új könyv hozzáadása</Button>
     </Flex>
               <Modal opened={showForm} onClose={()=>setShowform(false)} title="Focus demo">

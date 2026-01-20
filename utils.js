@@ -35,3 +35,13 @@ export const createBook = async (newBook) => {
     const resp = await axios.post(baseUrl,newBook)
     return resp.data
 }
+
+export  const deleteBook = async (id) => {
+    const resp = await axios.delete(baseUrl+"/"+id)
+    return resp.data
+}
+
+export const updateBook = async (id,updateData) => {
+    const resp = await axios.put(baseUrl+"/"+id,updateBook)
+    return resp.data
+}
