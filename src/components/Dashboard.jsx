@@ -1,7 +1,7 @@
 import { Flex, Table, ScrollArea, Button, Modal, TextInput, Text } from '@mantine/core';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { createBook, deleteBook, readBooks } from '../../utils';
+import { createBook, deleteBook, readBooks, updateBook } from '../../utils';
 import { FaTrash } from "react-icons/fa6";
 import { MdModeEditOutline } from "react-icons/md";
 
@@ -60,14 +60,17 @@ console.log(books);
     try {
       if(editingBook){
         console.log("modositas");
+        const updatedBook = await updateBook(editingBook.id,newBook)
+        setBooks(prev=>prev.map(obj=>obj.id==editingBook.id?updatedBook:obj))
         
       }else{
       const bookToSave = {...newBook,category_id:1,cover:"borito",rating:1}
       const savedBook=await createBook(bookToSave)
       setBooks((prev)=>[...prev,savedBook])
+      }
       setShowform(false)
       setNewBook({title:"",author:"",description:""})
-      }
+      setEditingBook(null)
     } catch (error) {
       console.log(error);
       
